@@ -1,0 +1,79 @@
+### Logstash Configuration ###
+
+##Config files contains three sections: input, filter and output
+
+input {
+   file {
+       type => "SystemError"
+	   path => "/data/structured/SystemErr_*"
+       start_position => "beginning"
+       sincedb_path => "/dev/null"
+   }
+      file {
+       type => "Errorlog"
+	   path => "/data/structured/errorLog*"
+       start_position => "beginning"
+       sincedb_path => "/dev/null"
+   }
+      file {
+       type => "Messagelog"
+	   path => "/data/structured/message*"
+       start_position => "beginning"
+       sincedb_path => "/dev/null"
+   }
+      file {
+       type => "Accesslog"
+	   path => "/data/structured/accesspay*"
+       start_position => "beginning"
+       sincedb_path => "/dev/null"
+   }
+}
+
+filter {
+	if [type] == "SystemError" {
+		csv {
+				columns => ["rowindex","timestamp","threadid","message"]
+		}
+		date {
+				match => ["timestamp", "[MM/dd/yy HH:mm:ss:SSS zZZ]"]
+		}
+	}
+	
+	if [type] == "Errorlog" {
+		csv {
+				columns => ["rowindex","timestamp","message"]
+		}
+		date {
+				match => ["timestamp", " yy-MM-dd HH:mm:ss,SSS "]
+		}
+	}
+
+	if [type] == "Messagelog" {
+		csv {
+				columns => ["rowindex","timestamp","message"]
+		}
+		date {
+				match => ["timestamp", " yy-MM-dd HH:mm:ss,SSS "]
+		}
+	}
+	
+	if [type] == "Accesslog" {
+		csv {
+				columns => ["clientip","timestamp","url","code","bytes","method"]
+		}
+		date {
+				match => ["timestamp", "[dd/MMM/yyyy:HH:mm:ss Z]"]
+		}
+	}	
+}
+
+output {
+	stdout { codec => rubydebug }
+
+	elasticsearch {
+        	hosts => "search-uat-vpc1-elk-4w53lgju6uld5xop5uda3bzhze.ap-south-1.es.amazonaws.com:443"
+		index => "csv_index"
+		ssl => "true"
+  		manage_template => false
+  	}
+}
