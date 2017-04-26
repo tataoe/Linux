@@ -1,0 +1,4 @@
+### bash script to copy files in S3 ###
+
+#!/bin/bash
+aws s3 mv /data/other/ s3://indusind-rstudio/rawlogsdata/ --region ap-south-1 --recursive
