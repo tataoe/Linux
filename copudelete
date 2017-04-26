@@ -1,0 +1,169 @@
+#!/bin/bash
+
+function contains() {
+    local n=$#
+    local value=${!n}
+    for ((i=1;i < $#;i++)) {
+        if [ "${!i}" == "${value}" ]; then
+            echo "y"
+            return 0
+        fi
+    }
+    echo "n"
+    return 1
+}
+
+## Web Logs ##
+
+# Access #
+cd /mnt/staging/mirror/uat/internet/web/access/
+for filename in access*; do
+    a=$(echo $filename)
+    if ! grep -q $a access_track.txt ; then
+        echo $a >> access_track.txt
+        cp $filename /mnt/staging/raw/uat/internet/web/access/
+    fi
+done
+
+ln=0
+ln_list=()
+while read p; do
+	((ln++))
+	prefix="/mnt/staging/mirror/uat/internet/web/access/"
+	dirlist=(`ls ${prefix}*`)
+	a=$(echo ${dirlist[*]} | sed 's/\/mnt\/staging\/mirror\/uat\/internet\/web\/access\///g')
+	if [ $(contains $a $p) == "n" ]; then
+    		ln_list+=($ln)
+			echo $p
+	fi
+done </mnt/staging/mirror/uat/internet/web/access/access_track.txt
+sed -i ''"${ln_list[*]/%/d;}"'' /mnt/staging/mirror/uat/internet/web/access/access_track.txt
+
+	
+# ErrorLog #
+cd /mnt/staging/mirror/uat/internet/web/errorlog/
+for filename in Error_*; do
+    a=$(echo $filename)
+    if ! grep -q $a web_errorlog_track.txt ; then
+           #echo Not found.
+        echo $a >> web_errorlog_track.txt
+        cp $filename /mnt/staging/raw/uat/internet/web/errorlog/
+    fi
+done
+
+## Delete filenames from the track list
+ln=0
+ln_list=()
+while read p; do
+	((ln++))
+	prefix="/mnt/staging/mirror/uat/internet/web/errorlog/"
+	dirlist=(`ls ${prefix}*`)
+	a=$(echo ${dirlist[*]} | sed 's/\/mnt\/staging\/mirror\/uat\/internet\/web\/errorlog\///g')
+	if [ $(contains $a $p) == "n" ]; then
+    		ln_list+=($ln)
+	fi
+done </mnt/staging/mirror/uat/internet/web/errorlog/web_errorlog_track.txt
+sed -i ''"${ln_list[*]/%/d;}"'' /mnt/staging/mirror/uat/internet/web/errorlog/web_errorlog_track.txt
+
+
+## App Logs ##
+
+# System Error #
+cd /mnt/staging/mirror/uat/internet/app/systemerr/
+for filename in SystemErr_*; do
+    a=$(echo $filename)
+    if ! grep -q $a systemerr_track.txt ; then
+           #echo Not found.
+        echo $a >> systemerr_track.txt
+        cp $filename /mnt/staging/raw/uat/internet/app/systemerr/
+    fi
+done
+
+ln=0
+ln_list=()
+while read p; do
+	((ln++))
+	prefix="/mnt/staging/mirror/uat/internet/app/systemerr/"
+	dirlist=(`ls ${prefix}*`)
+	a=$(echo ${dirlist[*]} | sed 's/\/mnt\/staging\/mirror\/uat\/internet\/app\/systemerr\///g')
+	if [ $(contains $a $p) == "n" ]; then
+    		ln_list+=($ln)
+	fi
+done </mnt/staging/mirror/uat/internet/app/systemerr/systemerr_track.txt
+sed -i ''"${ln_list[*]/%/d;}"'' /mnt/staging/mirror/uat/internet/app/systemerr/systemerr_track.txt
+
+
+# SystemOut #
+cd /mnt/staging/mirror/uat/internet/app/systemout/
+for filename in SystemOut_*; do
+    a=$(echo $filename)
+    if ! grep -q $a systemout_track.txt ; then
+           #echo Not found.
+        echo $a >> systemout_track.txt
+        cp $filename /mnt/staging/raw/uat/internet/app/systemout/
+    fi
+done
+
+ln=0
+ln_list=()
+while read p; do
+	((ln++))
+	prefix="/mnt/staging/mirror/uat/internet/app/systemout/"
+	dirlist=(`ls ${prefix}*`)
+	a=$(echo ${dirlist[*]} | sed 's/\/mnt\/staging\/mirror\/uat\/internet\/app\/systemout\///g')
+	if [ $(contains $a $p) == "n" ]; then
+    		ln_list+=($ln)
+			echo $p
+	fi
+done </mnt/staging/mirror/uat/internet/app/systemout/systemout_track.txt
+sed -i ''"${ln_list[*]/%/d;}"'' /mnt/staging/mirror/uat/internet/app/systemout/systemout_track.txt
+
+
+# Message Log #
+cd /mnt/staging/mirror/uat/internet/app/message/
+for filename in messageLog.log.*; do
+    a=$(echo $filename)
+    if ! grep -q $a message_track.txt ; then
+        echo $a >> message_track.txt
+        cp $filename /mnt/staging/raw/uat/internet/app/message/
+    fi
+done
+
+ln=0
+ln_list=()
+while read p; do
+	((ln++))
+	prefix="/mnt/staging/mirror/uat/internet/app/message/"
+	dirlist=(`ls ${prefix}*`)
+	a=$(echo ${dirlist[*]} | sed 's/\/mnt\/staging\/mirror\/uat\/internet\/app\/message\///g')
+	if [ $(contains $a $p) == "n" ]; then
+    		ln_list+=($ln)
+	fi
+done </mnt/staging/mirror/uat/internet/app/message/message_track.txt
+
+sed -i ''"${ln_list[*]/%/d;}"'' /mnt/staging/mirror/uat/internet/app/message/message_track.txt
+
+
+# Error Log #
+cd /mnt/staging/mirror/uat/internet/app/error/
+for filename in Error_*; do
+    a=$(echo $filename)
+    if ! grep -q $a app_error_track.txt ; then
+           #echo Not found.
+        echo $a >> app_error_track.txt
+        cp $filename /mnt/staging/raw/uat/internet/app/error/
+    fi
+done
+
+ln=0
+ln_list=()
+while read p; do
+	((ln++))
+	prefix="/mnt/staging/mirror/uat/internet/app/error/"
+	dirlist=(`ls ${prefix}*`)
+	a=$(echo ${dirlist[*]} | sed 's/\/mnt\/staging\/mirror\/uat\/internet\/app\/error\///g')
+	if [ $(contains $a $p) == "n" ]; then
+    		ln_list+=($ln)
+	fi
+done </mnt/staging/mirror/uat/internet/app/error/app_error_track.txt
+sed -i ''"${ln_list[*]/%/d;}"'' /mnt/staging/mirror/uat/internet/app/error/app_error_track.txt
