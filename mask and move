@@ -1,0 +1,31 @@
+#!/bin/bash
+
+## Scripts written to mask customer related sensitive data ##
+
+## Web Tier Scripts ##
+
+# Acess 
+find /mnt/staging/raw/uat/internet/web/access/ -type f -exec perl -api -e 's/[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+/1.1.1.1/g' {} \; -exec mv {} /mnt/staging/masked/uat/internet/web/access/ \;
+
+# Error log
+find /mnt/staging/raw/uat/internet/web/error/ -type f -exec perl -api -e 's/[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+/1.1.1.1/g' {} \; -exec mv {} /mnt/staging/masked/uat/internet/web/error/ \;
+
+
+
+## App Tier Scripts ##
+
+# Syserror
+find /mnt/staging/raw/uat/internet/app/systemerr/ -type f -exec perl -api -e 's/\b(?!00)[A-Z0-9]{6,}/masked/g' {} \; -exec mv {} /mnt/staging/masked/uat/internet/app/systemerr/ \;
+
+
+# Errorlog
+find /mnt/staging/raw/uat/internet/app/errorlog/ -type f -exec perl -api -e 's/[0-9]{15,}/masked/g' {} \; -exec perl -api -e 's/[0-9]{5,}/masked/g' {} \; -exec perl -api -e 's/\b(?!FAT)[A-Z0-9]{5,}/masked/g' {} \; -exec mv {} /mnt/staging/masked/uat/internet/app/errorlog/ \;
+
+ 
+# Messagelog
+find /mnt/staging/raw/uat/internet/app/message/ -type f -exec perl -api -e 's/[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+/masked/g' {} \; -exec perl -api -e 's/\b[A-Z0-9]{6,}/masked/g' {} \; -exec perl -api -e 's/\b[0-9]{6,}/masked/g' {} \; -exec mv {} /mnt/staging/masked/uat/internet/app/message/ \;
+
+
+# Sysout
+find /mnt/staging/raw/uat/internet/app/systemout/ -type f -exec perl -api -e 's/(?<=ADDR[0-9]=)[A-Za-z0-9].*?(?=\^C)/masked/g' {} \; -exec perl -api -e 's/(?<=MAddress[0-9]=)[A-Za-z0-9].*?(?=,)/masked/g' {} \; -exec perl -api -e 's/(?<=Address[0-9]=)[A-Za-z0-9].*?(?=,)/masked/g' {} \; -exec perl -api -e 's/(?<=_NAME=)[A-Za-z].*?(?=\^)/masked/g' {} \; -exec perl -api -e 's/(?<=beneficiary)[A-Z\s].*?(?=towards)/masked/g' {} \; -exec perl -api -e 's/(?<=ADDR[0-9]=)[A-Z\s].*?(?=\^C)/masked/g' {} \; -exec perl -api -e 's/(?<=[Cc]ard_[Ee]xp_[Mm]onth=)[0-9].*?\b/masked/g' {} \; -exec perl -api -e 's/(?<=[Cc]ard_[Pp]in=)[0-9].*?\b/masked/g' {} \; -exec perl -api -e 's/(?<=[Cc]ard_[Ee]xp_[Yy]ear=)[0-9].*?\b/masked/g' {} \; -exec perl -api -e 's/(?<=[Bb]irth_[Yy]ear=)[0-9].*?\b/masked/g' {} \; -exec perl -api -e 's/(?<=[Bb]irth_[Mm]onth=)[0-9].*?\b/masked/g' {} \; -exec perl -api -e 's/(?<=[Bb]irth_[Dd]ay=)[0-9].*?\b/masked/g' {} \; -exec perl -api -e 's/[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+/masked/g' {} \; -exec perl -api -e 's/\b([Rr]eq_)[0-9]{13}/masked/g' {} \; -exec perl -api -e 's/\b([Cc]heck)[A-Za-z0-9]+\b/checkmasked/g' {} \; -exec perl -api -e 's/\b(CorporateSignonCorpId:)[A-Za-z0-9]+\b/CorporateSignonCorpId:masked/g' {} \; -exec perl -api -e 's/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b/masked/g' {} \; -exec perl -api -e 's/\b(?!00)[0-9]{6,}/masked/g' {} \; -exec mv {} /mnt/staging/masked/uat/internet/app/systemout/ \;
+
