@@ -1,0 +1,8 @@
+### bash script to move files to EC2###
+
+#!/bin/bash
+
+
+# Rsysnc and delete from source script
+
+rsync -avz --remove-source-files -e "ssh -i /root/Desktop/pentation-neha.pem" /mnt/staging/masked/ pentation-neha@10.60.40.201:/data/masked/
